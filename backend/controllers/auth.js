@@ -16,7 +16,8 @@ async function register(req, res, next) {
 
         res.status(201).json({
             success: true,
-            user: user,
+            // user: user,
+            token: "235iu235bkjs"
         })
     } catch (error) {
         // res.status(500).json({
@@ -70,6 +71,11 @@ function forgotpassword(req, res, next) {
 
 function resetpassword(req, res, next) {
     res.send('Reset Password Route')
+}
+
+//we need user for email and id
+const sendToken = (user, statusCode, res) => {
+    const token = 
 }
 
 export { register, login, forgotpassword, resetpassword }
