@@ -3,6 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import router from '../backend/routes/auth.js'
 import connectDB from './config/db.js'
+import errorHandler from './middleware/error.js'
 
 //Connect DB
 connectDB()
@@ -14,6 +15,9 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/api/auth', router)
+
+//Error Handler (Should be last piece of middleware)
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
 
