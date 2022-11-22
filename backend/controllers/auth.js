@@ -14,11 +14,13 @@ async function register(req, res, next) {
             password,
         })
 
-        res.status(201).json({
-            success: true,
-            // user: user,
-            token: "235iu235bkjs"
-        })
+        // res.status(201).json({
+        //     success: true,
+        //     // user: user,
+        //     token: "235iu235bkjs"
+        // })
+
+        sendToken(user, 201, res)
     } catch (error) {
         // res.status(500).json({
         //     success: false,
@@ -55,10 +57,11 @@ async function login(req, res, next) {
             return next(new ErrorResponse('Invalid credentials', 401))
         }
 
-        res.status(200).json({
-            success: true,
-            token: 'twt2asfasf2323a',
-        })
+        // res.status(200).json({
+        //     success: true,
+        //     token: 'twt2asfasf2323a',
+        // })
+        sendToken(user, 201, res)
     } catch (error) {
         // res.status(500).json({ success: false, error: error.message })
         next(error)
@@ -75,7 +78,8 @@ function resetpassword(req, res, next) {
 
 //we need user for email and id
 const sendToken = (user, statusCode, res) => {
-    const token = 
+    const token = user.getSignedToken()
+    res.status(statusCode).json({ success: true, token })
 }
 
 export { register, login, forgotpassword, resetpassword }
