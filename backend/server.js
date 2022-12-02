@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import cors from 'cors'
 import router from '../backend/routes/auth.js'
+import privateRouter from '../backend/routes/private.js'
 import connectDB from './config/db.js'
 import errorHandler from './middleware/error.js'
 
@@ -15,6 +16,7 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/api/auth', router)
+app.use('/api/private', privateRouter)
 
 //Error Handler (Should be last piece of middleware)
 app.use(errorHandler)

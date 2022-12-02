@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken'
 import User from '../models/User.js'
-import ErrorResponse from '../utils/errorResponse'
+import ErrorResponse from '../utils/errorResponse.js'
 
-async function protect(req, res, next) {
+export async function protect(req, res, next) {
     let token
 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -29,5 +29,3 @@ async function protect(req, res, next) {
         return next(new ErrorResponse('Not authorized to access this route', 401))
     }
 }
-
-export default protect
