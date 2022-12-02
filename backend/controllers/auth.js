@@ -68,8 +68,38 @@ async function login(req, res, next) {
     }
 }
 
-function forgotpassword(req, res, next) {
-    res.send('Forgot Password Route')
+async function forgotpassword(req, res, next) {
+    const {email} = req.body;
+
+    try {
+        const user = await User.findOne({email})
+
+        if(!user){
+            return next(new ErrorResponse("Email could not be send", 404))
+        }
+
+        const resetToken = user.getResetPasswordToken()
+
+        await user.save();
+
+        const resetUrl = `${process.env.FRONT_END_DOMAIN}/passwordreset/${resetToken}`
+
+        //clicktracking is to make it so that sendgrid emailer doesn't add a weird looking link to the a tag
+        const message = `
+            <h1>You have requested a password reset</h1>
+            <p>Please go to this link to reset your password</p>
+            <a href=${resetUrl} clicktracking=off>${resetUrl}</a>
+        `
+
+        try{
+            
+        } catch (error) {
+
+        }
+
+    } catch (error) {
+
+    }
 }
 
 function resetpassword(req, res, next) {
