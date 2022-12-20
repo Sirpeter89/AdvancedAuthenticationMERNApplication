@@ -1,6 +1,7 @@
 import User from '../models/User.js'
 import dotenv from 'dotenv'
 import ErrorResponse from '../utils/errorResponse.js'
+import sendEmail from '../utils/sendEmail.js'
 
 dotenv.config()
 
@@ -69,18 +70,18 @@ async function login(req, res, next) {
 }
 
 async function forgotpassword(req, res, next) {
-    const {email} = req.body;
+    const { email } = req.body
 
     try {
-        const user = await User.findOne({email})
+        const user = await User.findOne({ email })
 
-        if(!user){
-            return next(new ErrorResponse("Email could not be send", 404))
+        if (!user) {
+            return next(new ErrorResponse('Email could not be send', 404))
         }
 
         const resetToken = user.getResetPasswordToken()
 
-        await user.save();
+        await user.save()
 
         const resetUrl = `${process.env.FRONT_END_DOMAIN}/passwordreset/${resetToken}`
 
@@ -91,14 +92,24 @@ async function forgotpassword(req, res, next) {
             <a href=${resetUrl} clicktracking=off>${resetUrl}</a>
         `
 
-        try{
-            
+        try {
+            await sendEmail({
+                to: user.email,
+                subject: 'Password Reset Request',
+                text: message,
+            })
+
+            res.status(200).json({ success: true, data: 'Email Sent' })
         } catch (error) {
+            user.resetPasswordToken = undefined
+            user.resetPasswordExpire = undefined
 
+            await user.save()
+
+            return next(new ErrorResponse('Email could not be sent', 500))
         }
-
     } catch (error) {
-
+        next(error)
     }
 }
 
